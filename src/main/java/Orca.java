@@ -1,6 +1,9 @@
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
+import javaslang.Tuple;
+import javaslang.Tuple2;
+import javaslang.Tuple3;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -10,121 +13,41 @@ import java.util.*;
  * @author Kanth Kumar Dayanand
  */
 public class Orca {
-    private static int m,n;
-    private static int[ ] deg;
-    private static Pair<Integer, Integer>[ ] edges;
+    private int m,n;
+    private int[ ] deg;
+    private Tuple2<Integer, Integer>[ ] edges;
 
-    private static int[ ][ ] adj; // adj[x] - adjacency list of node x
-    private static Pair<Integer, Integer>[ ][ ] inc; // inc[x] - incidence list of node x: (y, edge id)
-    private static Map<Pair, Integer> common2 = new HashMap<>();
-    private static Map<Triple, Integer> common3 = new HashMap<>();
+    private long[][] orbit; // orbit[x][o] - how many times does node x participate in orbit o
 
-    private static boolean adjacent(int x, int y) {
+    private int[ ][ ] adj; // adj[x] - adjacency list of node x
+    private Tuple2<Integer, Integer>[ ][ ] inc; // inc[x] - incidence list of node x: (y, edge id)
+    private Map<Tuple2, Integer> common2 = new HashMap<>();
+    private Map<Tuple3, Integer> common3 = new HashMap<>();
+
+    private boolean adjacent(int x, int y) {
         return Arrays.binarySearch(adj[x], y) >= 0;
     }
 
-    private static Pair<Integer, Integer> pairOf(int a, int b){
+    private static Tuple2<Integer, Integer> pairOf(int a, int b){
         if(a < b) {
-            return Pair.of(a, b);
+            return Tuple.of(a, b);
         } else {
-            return Pair.of(b, a);
+            return Tuple.of(b, a);
         }
     }
 
-    private static Triple tripleOf(int x, int y, int z){
+    private static Tuple3 tripleOf(int x, int y, int z){
         List<Integer> tripleList = Arrays.asList(x,y,z);
         tripleList.sort(Integer::compareTo);
-        return Triple.of(tripleList.get(0), tripleList.get(1), tripleList.get(2));
-    }
-
-    private static long[][] orbit; // orbit[x][o] - how many times does node x participate in orbit o
-
-    private static int GS=5;
-    private static boolean init(int argc, String[] argv) {
-        if (argc!=2) {
-            System.out.println("Incorrect number of arguments.");
-            System.out.println("Usage: orca.exe [graphlet size: 4/5] [graph - input file] [graphlets - output file]");
-        }
-        GS = Integer.parseInt(argv[0]);
-        if (GS!=4 && GS!=5) {
-            System.out.println("Incorrect graphlet size "+argv[0]+". Should be 4 or 5.");
-            return false;
-        }
-        Scanner scanner = new Scanner(Orca.class.getResourceAsStream(argv[1]));
-
-        // read input graph
-        n = scanner.nextInt();
-        m = scanner.nextInt();
-
-        int d_max=0;
-        edges = new Pair[m];
-        deg = new int[n];
-        for (int i=0;i<m;i++) {
-            int a,b;
-            a = scanner.nextInt();
-            b = scanner.nextInt();
-            if (!(0<=a && a<n) || !(0<=b && b<n)) {
-                System.out.println("Node ids should be between 0 and n-1.");
-                return false;
-            }
-            if (a==b) {
-                System.out.println("Self loops (edge from x to x) are not allowed.");
-                return false;
-            }
-            deg[a]++; deg[b]++;
-            edges[i]= pairOf(a,b);
-        }
-        for (int i=0;i<n;i++) d_max=Math.max(d_max,deg[i]);
-        System.out.println("nodes: "+n);
-        System.out.println("edges: "+m);
-        System.out.println("max degree: "+d_max);
-
-        Set<Pair> set = new HashSet<>(Arrays.asList(edges));
-        if(set.size() != m) {
-            System.out.println("Input file contains duplicate undirected edges.");
-            return false;
-        }
-
-        // set up adjacency, incidence lists
-        adj = new int[n][];
-        for (int i=0;i<n;i++) {
-            adj[i] = new int[deg[i]];
-        }
-
-        inc = new Pair[n][];
-        for (int i=0;i<n;i++) {
-            inc[i] = new Pair[deg[i]];
-        }
-
-	    int[] d = new int[n];
-        for (int i=0;i<m;i++) {
-            int a=edges[i].getLeft(), b=edges[i].getRight();
-            adj[a][d[a]]=b; adj[b][d[b]]=a;
-            inc[a][d[a]]=Pair.of(b,i); inc[b][d[b]]=Pair.of(a,i);
-            d[a]++; d[b]++;
-        }
-        for (int i=0;i<n;i++) {
-            Arrays.sort(adj[i]);
-            Arrays.sort(inc[i]);
-        }
-        // initialize orbit counts
-        orbit = new long[n][73];
-        return true;
+        return Tuple.of(tripleList.get(0), tripleList.get(1), tripleList.get(2));
     }
 
     /** count graphlets on max 4 nodes */
-    private static void count4() {
-        long frac,frac_prev;
-
+    public void count4() {
         // precompute triangles that span over edges
 	    int[] tri = new int[m];
-        frac_prev=-1;
         for (int i=0;i<m;i++) {
-            frac = 100L*i/m;
-            if (frac!=frac_prev) {
-                frac_prev=frac;
-            }
-            int x=edges[i].getLeft(), y=edges[i].getRight();
+            int x=edges[i]._1, y=edges[i]._2;
             for (int xi=0,yi=0; xi<deg[x] && yi<deg[y]; ) {
                 if (adj[x][xi]==adj[y][yi]) { tri[i]++; xi++; yi++; }
                 else if (adj[x][xi]<adj[y][yi]) { xi++; }
@@ -136,12 +59,7 @@ public class Orca {
         long[] C4 = new long[n];
 	    int[] neigh = new int[n];
 	    int nn;
-        frac_prev=-1;
         for (int x=0;x<n;x++) {
-            frac = 100L*x/n;
-            if (frac!=frac_prev) {
-                frac_prev=frac;
-            }
             for (int nx=0;nx<deg[x];nx++) {
                 int y=adj[x][nx];
                 if (y >= x) break;
@@ -168,13 +86,7 @@ public class Orca {
 	    int[] common = new int[n];
 	    int[] common_list = new int[n];
 	    int nc=0;
-        frac_prev=-1;
         for (int x=0;x<n;x++) {
-            frac = 100L*x/n;
-            if (frac!=frac_prev) {
-                frac_prev=frac;
-            }
-
             long f_12_14=0, f_10_13=0;
             long f_13_14=0, f_11_13=0;
             long f_7_11=0, f_5_8=0;
@@ -187,9 +99,9 @@ public class Orca {
             orbit[x][0]=deg[x];
             // x - middle node
             for (int nx1=0;nx1<deg[x];nx1++) {
-                int y=inc[x][nx1].getLeft(), ey=inc[x][nx1].getRight();
+                int y=inc[x][nx1]._1, ey=inc[x][nx1]._2;
                 for (int ny=0;ny<deg[y];ny++) {
-                    int z=inc[y][ny].getLeft(), ez=inc[y][ny].getRight();
+                    int z=inc[y][ny]._1, ez=inc[y][ny]._2;
                     if (adjacent(x,z)) { // triangle
                         if (z<y) {
                             f_12_14 += tri[ez]-1;
@@ -201,7 +113,7 @@ public class Orca {
                     }
                 }
                 for (int nx2=nx1+1;nx2<deg[x];nx2++) {
-                    int z=inc[x][nx2].getLeft(), ez=inc[x][nx2].getRight();
+                    int z=inc[x][nx2]._1, ez=inc[x][nx2]._2;
                     if (adjacent(y,z)) { // triangle
                         orbit[x][3]++;
                         f_13_14 += (tri[ey]-1)+(tri[ez]-1);
@@ -215,9 +127,9 @@ public class Orca {
             }
             // x - side node
             for (int nx1=0;nx1<deg[x];nx1++) {
-                int y=inc[x][nx1].getLeft(), ey=inc[x][nx1].getRight();
+                int y=inc[x][nx1]._1, ey=inc[x][nx1]._2;
                 for (int ny=0;ny<deg[y];ny++) {
-                    int z=inc[y][ny].getLeft(), ez=inc[y][ny].getRight();
+                    int z=inc[y][ny]._1, ez=inc[y][ny]._2;
                     if (x==z) continue;
                     if (!adjacent(x,z)) { // path
                         orbit[x][1]++;
@@ -243,29 +155,23 @@ public class Orca {
             orbit[x][4]=(2*f_12_14+f_4_8-f_8_12-6*f_14);
         }
     }
-    /** count graphlets on max 5 nodes */
-    private static void count5() {
-        long frac,frac_prev;
 
+    /** count graphlets on max 5 nodes */
+    public void count5() {
         // precompute common nodes
-        frac_prev=-1;
         for (int x=0;x<n;x++) {
-            frac = 100L*x/n;
-            if (frac!=frac_prev) {
-                frac_prev=frac;
-            }
             for (int n1=0;n1<deg[x];n1++) {
                 int a=adj[x][n1];
                 for (int n2=n1+1;n2<deg[x];n2++) {
                     int b=adj[x][n2];
-                    Pair ab = pairOf(a,b);
+                    Tuple2 ab = pairOf(a,b);
                     common2.computeIfPresent(ab, (pair, i) -> i+1);
                     common2.putIfAbsent(ab, 1);
                     for (int n3=n2+1;n3<deg[x];n3++) {
                         int c=adj[x][n3];
                         boolean st = adjacent(a,b) ? (adjacent(a,c) || adjacent(b,c)) : (adjacent(a,c) && adjacent(b,c));
                         if (!st) continue;
-                        Triple abc = tripleOf(a,b,c);
+                        Tuple3 abc = tripleOf(a,b,c);
                         common3.computeIfPresent(abc, (triple, i) -> i+1);
                         common3.putIfAbsent(abc, 1);
                     }
@@ -276,7 +182,7 @@ public class Orca {
         // precompute triangles that span over edges
         int[] tri = new int[m];
         for (int i=0;i<m;i++) {
-            int x=edges[i].getLeft(), y=edges[i].getRight();
+            int x=edges[i]._1, y=edges[i]._2;
             for (int xi=0,yi=0; xi<deg[x] && yi<deg[y]; ) {
                 if (adj[x][xi]==adj[y][yi]) { tri[i]++; xi++; yi++; }
                 else if (adj[x][xi]<adj[y][yi]) { xi++; }
@@ -289,12 +195,7 @@ public class Orca {
 	    int[ ] neigh = new int[n];
 	    int[ ] neigh2 = new int[n];
 	    int nn, nn2;
-        frac_prev=-1;
         for (int x=0;x<n;x++) {
-            frac = 100L*x/n;
-            if (frac!=frac_prev) {
-                frac_prev=frac;
-            }
             for (int nx=0;nx<deg[x];nx++) {
                 int y=adj[x][nx];
                 if (y >= x) break;
@@ -336,13 +237,7 @@ public class Orca {
 	    int nca=0;
 
         // set up a system of equations relating orbit counts
-        frac_prev=-1;
         for (int x=0;x<n;x++) {
-            frac = 100L*x/n;
-            if (frac!=frac_prev) {
-                frac_prev=frac;
-            }
-
             for (int i=0;i<ncx;i++) common_x[common_x_list[i]]=0;
             ncx=0;
 
@@ -378,7 +273,7 @@ public class Orca {
             long f_23=0, f_21=0; // 7
 
             for (int nx1=0;nx1<deg[x];nx1++) {
-                int a=inc[x][nx1].getLeft(), xa=inc[x][nx1].getRight();
+                int a=inc[x][nx1]._1, xa=inc[x][nx1]._2;
 
                 for (int i=0;i<nca;i++) common_a[common_a_list[i]]=0;
                 nca=0;
@@ -394,10 +289,10 @@ public class Orca {
 
                 // x = orbit-14 (tetrahedron)
                 for (int nx2=nx1+1;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (!adjacent(a,b)) continue;
                     for (int nx3=nx2+1;nx3<deg[x];nx3++) {
-                        int c=inc[x][nx3].getLeft(), xc=inc[x][nx3].getRight();
+                        int c=inc[x][nx3]._1, xc=inc[x][nx3]._2;
                         if (!adjacent(a,c) || !adjacent(b,c)) continue;
                         orbit[x][14]++;
                         f_70 += common3.getOrDefault(tripleOf(a,b,c), 0)-1;
@@ -415,10 +310,10 @@ public class Orca {
 
                 // x = orbit-13 (diamond)
                 for (int nx2=0;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (!adjacent(a,b)) continue;
                     for (int nx3=nx2+1;nx3<deg[x];nx3++) {
-                        int c=inc[x][nx3].getLeft(), xc=inc[x][nx3].getRight();
+                        int c=inc[x][nx3]._1, xc=inc[x][nx3]._2;
                         if (!adjacent(a,c) || adjacent(b,c)) continue;
                         orbit[x][13]++;
                         f_69 += (tri[xb]>1 && tri[xc]>1)?(common3.getOrDefault(tripleOf(x,b,c), 0)-1):0;
@@ -436,10 +331,10 @@ public class Orca {
 
                 // x = orbit-12 (diamond)
                 for (int nx2=nx1+1;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (!adjacent(a,b)) continue;
                     for (int na=0;na<deg[a];na++) {
-                        int c=inc[a][na].getLeft(), ac=inc[a][na].getRight();
+                        int c=inc[a][na]._1, ac=inc[a][na]._2;
                         if (c==x || adjacent(x,c) || !adjacent(b,c)) continue;
                         orbit[x][12]++;
                         f_65 += (tri[ac]>1)?common3.getOrDefault(tripleOf(a,b,c), 0):0;
@@ -454,10 +349,10 @@ public class Orca {
 
                 // x = orbit-8 (cycle)
                 for (int nx2=nx1+1;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (adjacent(a,b)) continue;
                     for (int na=0;na<deg[a];na++) {
-                        int c=inc[a][na].getLeft(), ac=inc[a][na].getRight();
+                        int c=inc[a][na]._1, ac=inc[a][na]._2;
                         if (c==x || adjacent(x,c) || !adjacent(b,c)) continue;
                         orbit[x][8]++;
                         f_62 += (tri[ac]>0)?common3.getOrDefault(tripleOf(a,b,c), 0):0;
@@ -473,10 +368,10 @@ public class Orca {
 
                 // x = orbit-11 (paw)
                 for (int nx2=nx1+1;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (!adjacent(a,b)) continue;
                     for (int nx3=0;nx3<deg[x];nx3++) {
-                        int c=inc[x][nx3].getLeft(), xc=inc[x][nx3].getRight();
+                        int c=inc[x][nx3]._1, xc=inc[x][nx3]._2;
                         if (c==a || c==b || adjacent(a,c) || adjacent(b,c)) continue;
                         orbit[x][11]++;
                         f_44 += tri[xc];
@@ -488,10 +383,10 @@ public class Orca {
 
                 // x = orbit-10 (paw)
                 for (int nx2=0;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (!adjacent(a,b)) continue;
                     for (int nb=0;nb<deg[b];nb++) {
-                        int c=inc[b][nb].getLeft(), bc=inc[b][nb].getRight();
+                        int c=inc[b][nb]._1, bc=inc[b][nb]._2;
                         if (c==x || c==a || adjacent(a,c) || adjacent(x,c)) continue;
                         orbit[x][10]++;
                         f_52 += common_a[c]-1;
@@ -504,10 +399,10 @@ public class Orca {
 
                 // x = orbit-9 (paw)
                 for (int na1=0;na1<deg[a];na1++) {
-                    int b=inc[a][na1].getLeft(), ab=inc[a][na1].getRight();
+                    int b=inc[a][na1]._1, ab=inc[a][na1]._2;
                     if (b==x || adjacent(x,b)) continue;
                     for (int na2=na1+1;na2<deg[a];na2++) {
-                        int c=inc[a][na2].getLeft(), ac=inc[a][na2].getRight();
+                        int c=inc[a][na2]._1, ac=inc[a][na2]._2;
                         if (c==x || !adjacent(b,c) || adjacent(x,c)) continue;
                         orbit[x][9]++;
                         f_56 += (tri[ab]>1 && tri[ac]>1)?common3.getOrDefault(tripleOf(a,b,c), 0):0;
@@ -521,10 +416,10 @@ public class Orca {
 
                 // x = orbit-4 (path)
                 for (int na=0;na<deg[a];na++) {
-                    int b=inc[a][na].getLeft(), ab=inc[a][na].getRight();
+                    int b=inc[a][na]._1, ab=inc[a][na]._2;
                     if (b==x || adjacent(x,b)) continue;
                     for (int nb=0;nb<deg[b];nb++) {
-                        int c=inc[b][nb].getLeft(), bc=inc[b][nb].getRight();
+                        int c=inc[b][nb]._1, bc=inc[b][nb]._2;
                         if (c==a || adjacent(a,c) || adjacent(x,c)) continue;
                         orbit[x][4]++;
                         f_35 += common_a[c]-1;
@@ -538,10 +433,10 @@ public class Orca {
 
                 // x = orbit-5 (path)
                 for (int nx2=0;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (b==a || adjacent(a,b)) continue;
                     for (int nb=0;nb<deg[b];nb++) {
-                        int c=inc[b][nb].getLeft(), bc=inc[b][nb].getRight();
+                        int c=inc[b][nb]._1, bc=inc[b][nb]._2;
                         if (c==x || adjacent(a,c) || adjacent(x,c)) continue;
                         orbit[x][5]++;
                         f_17 += deg[a]-1;
@@ -550,10 +445,10 @@ public class Orca {
 
                 // x = orbit-6 (claw)
                 for (int na1=0;na1<deg[a];na1++) {
-                    int b=inc[a][na1].getLeft(), ab=inc[a][na1].getRight();
+                    int b=inc[a][na1]._1, ab=inc[a][na1]._2;
                     if (b==x || adjacent(x,b)) continue;
                     for (int na2=na1+1;na2<deg[a];na2++) {
-                        int c=inc[a][na2].getLeft(), ac=inc[a][na2].getRight();
+                        int c=inc[a][na2]._1, ac=inc[a][na2]._2;
                         if (c==x || adjacent(x,c) || adjacent(b,c)) continue;
                         orbit[x][6]++;
                         f_22 += deg[a]-3;
@@ -564,10 +459,10 @@ public class Orca {
 
                 // x = orbit-7 (claw)
                 for (int nx2=nx1+1;nx2<deg[x];nx2++) {
-                    int b=inc[x][nx2].getLeft(), xb=inc[x][nx2].getRight();
+                    int b=inc[x][nx2]._1, xb=inc[x][nx2]._2;
                     if (adjacent(a,b)) continue;
                     for (int nx3=nx2+1;nx3<deg[x];nx3++) {
-                        int c=inc[x][nx3].getLeft(), xc=inc[x][nx3].getRight();
+                        int c=inc[x][nx3]._1, xc=inc[x][nx3]._2;
                         if (adjacent(a,c) || adjacent(b,c)) continue;
                         orbit[x][7]++;
                         f_23 += deg[x]-3;
@@ -638,24 +533,90 @@ public class Orca {
         }
     }
     
-    private static void writeResults(int g) {
+    public void writeResults(int graphletSize) {
         int no[] = {0,0,1,4,15,73};
         for (int i=0;i<n;i++) {
-            for (int j=0;j<no[g];j++) {
+            for (int j=0;j<no[graphletSize];j++) {
                 System.out.print(orbit[i][j]+" ");
             }
             System.out.print("\n");
         }
     }
 
-    public static void main(String[] args) {
-        if(!init(args.length, args)){
-            System.out.println("Stopping!");
+    public long[][] getSignatureVector(){
+        return orbit;
+    }
+
+    public boolean init(int argc, String[] argv) throws FileNotFoundException {
+        if (argc!=2) {
+            System.out.println("Incorrect number of arguments.");
+            System.out.println("Usage: orca.exe [graphlet size: 4/5] [graph - input file] [graphlets - output file]");
+            return false;
         }
-        if (GS==4)
-            count4();
-        if (GS==5)
-            count5();
-        writeResults(GS);
+        int GS = Integer.parseInt(argv[0]);
+        if (GS!=4 && GS!=5) {
+            System.out.println("Incorrect graphlet size "+argv[0]+". Should be 4 or 5.");
+            return false;
+        }
+        Scanner scanner = new Scanner(new File(argv[1]));
+
+        // read input graph
+        n = scanner.nextInt();
+        m = scanner.nextInt();
+
+        int d_max=0;
+        edges = new Tuple2[m];
+        deg = new int[n];
+        for (int i=0;i<m;i++) {
+            int a,b;
+            a = scanner.nextInt();
+            b = scanner.nextInt();
+            if (!(0<=a && a<n) || !(0<=b && b<n)) {
+                System.out.println("Node ids should be between 0 and n-1.");
+                return false;
+            }
+            if (a==b) {
+                System.out.println("Self loops (edge from x to x) are not allowed.");
+                return false;
+            }
+            deg[a]++; deg[b]++;
+            edges[i]= Tuple.of(a,b);
+        }
+        for (int i=0;i<n;i++) d_max=Math.max(d_max,deg[i]);
+        System.out.println("nodes: "+n);
+        System.out.println("edges: "+m);
+        System.out.println("max degree: "+d_max);
+
+        Set<Tuple2> set = new HashSet<>(Arrays.asList(edges));
+        if(set.size() != m) {
+            System.out.println("Input file contains duplicate undirected edges.");
+            return false;
+        }
+
+        // set up adjacency, incidence lists
+        adj = new int[n][];
+        for (int i=0;i<n;i++) {
+            adj[i] = new int[deg[i]];
+        }
+
+        inc = new Tuple2[n][];
+        for (int i=0;i<n;i++) {
+            inc[i] = new Tuple2[deg[i]];
+        }
+
+        int[] d = new int[n];
+        for (int i=0;i<m;i++) {
+            int a=edges[i]._1, b=edges[i]._2;
+            adj[a][d[a]]=b; adj[b][d[b]]=a;
+            inc[a][d[a]]=Tuple.of(b,i); inc[b][d[b]]=Tuple.of(a,i);
+            d[a]++; d[b]++;
+        }
+        for (int i=0;i<n;i++) {
+            Arrays.sort(adj[i]);
+            Arrays.sort(inc[i]);
+        }
+        // initialize orbit counts
+        orbit = new long[n][73];
+        return true;
     }
 }
