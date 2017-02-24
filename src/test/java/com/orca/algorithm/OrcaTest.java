@@ -1,5 +1,6 @@
 package com.orca.algorithm;
 
+import com.orca.utils.TestSetup;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  *
  * @author Kanth Kumar Dayanand
  */
-public class OrcaTest {
+public class OrcaTest extends TestSetup {
 
     private Orca orca = new Orca();
 
