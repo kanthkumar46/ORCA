@@ -22,7 +22,8 @@ public class OrcaTest {
 
     @Test
     public void orca_4NodeGraphlet_100NodeGraph_Test() throws IOException {
-        String path = OrcaTest.class.getResource("test_graphs/example.in").getPath();
+        String path = getResourcePath("/test_graphs/example.in");
+        System.out.println(path);
 
         try{
             orca.init(4, path);
@@ -37,7 +38,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("signature_vector/example_4node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/example_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -45,7 +46,7 @@ public class OrcaTest {
 
     @Test
     public void orca_4NodeGraphlet_1kNodeGraph_Test() throws IOException {
-        String path = OrcaTest.class.getResource("test_graphs/graph_1k_6k.in").getPath();
+        String path = getResourcePath("/test_graphs/graph_1k_6k.in");
 
         try{
             orca.init(4, path);
@@ -60,7 +61,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("signature_vector/graph_1k_6k_4node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_6k_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -68,7 +69,7 @@ public class OrcaTest {
 
     @Test
     public void orca_4NodeGraphlet_10kNodeGraph_Test() throws IOException {
-        String path = OrcaTest.class.getResource("test_graphs/graph_10k_20k.in").getPath();
+        String path = getResourcePath("/test_graphs/graph_10k_20k.in");
 
         try{
             orca.init(4, path);
@@ -83,7 +84,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("signature_vector/graph_10k_20k_4node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_20k_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -91,7 +92,7 @@ public class OrcaTest {
 
     @Test
     public void orca_5NodeGraphlet_100NodeGraph_Test() throws IOException {
-        String path = OrcaTest.class.getResource("test_graphs/example.in").getPath();
+        String path = getResourcePath("/test_graphs/example.in");
 
         try{
             orca.init(5, path);
@@ -105,7 +106,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("signature_vector/example_5node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/example_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -113,7 +114,7 @@ public class OrcaTest {
 
     @Test
     public void orca_5NodeGraphlet_1kNodeGraph_Test() throws IOException {
-        String path = OrcaTest.class.getResource("test_graphs/graph_1k_4k.in").getPath();
+        String path = getResourcePath("/test_graphs/graph_1k_4k.in");
         String[] args = new String[]{"5", path};
 
         try{
@@ -128,7 +129,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("signature_vector/graph_1k_4k_5node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_4k_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -136,7 +137,7 @@ public class OrcaTest {
 
     @Test
     public void orca_5NodeGraphlet_10kNodeGraph_Test() throws IOException {
-        String path = OrcaTest.class.getResource("test_graphs/graph_10k_20k.in").getPath();
+        String path = getResourcePath("/test_graphs/graph_10k_20k.in");
         String[] args = new String[]{"5", path};
 
         try{
@@ -151,7 +152,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("signature_vector/graph_10k_20k_5node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_20k_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -159,5 +160,9 @@ public class OrcaTest {
 
     private InputStream getResourceStream(String file){
         return OrcaTest.class.getResourceAsStream(file);
+    }
+
+    private String getResourcePath(String file){
+        return OrcaTest.class.getResource(file).getPath();
     }
 }
