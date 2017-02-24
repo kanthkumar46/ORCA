@@ -23,7 +23,6 @@ public class OrcaTest {
     @Test
     public void orca_4NodeGraphlet_100NodeGraph_Test() throws IOException {
         String path = getResourcePath("/test_graphs/example.in");
-        System.out.println(path);
 
         try{
             orca.init(4, path);
