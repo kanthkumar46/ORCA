@@ -33,7 +33,6 @@ public class OrcaTest {
         long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.copyOf(longs, 15))
                 .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
@@ -45,7 +44,7 @@ public class OrcaTest {
 
     @Test
     public void orca_4NodeGraphlet_1kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/graph_1k_6k.in");
+        String path = getResourcePath("/test_graphs/p_05.in");
 
         try{
             orca.init(4, path);
@@ -56,11 +55,10 @@ public class OrcaTest {
         long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.copyOf(longs, 15))
                 .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_6k_4node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/p_05_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -68,7 +66,7 @@ public class OrcaTest {
 
     @Test
     public void orca_4NodeGraphlet_10kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/graph_10k_20k.in");
+        String path = getResourcePath("/test_graphs/graph_10k_60k.in");
 
         try{
             orca.init(4, path);
@@ -79,11 +77,10 @@ public class OrcaTest {
         long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.copyOf(longs, 15))
                 .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_20k_4node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_60k_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -113,8 +110,7 @@ public class OrcaTest {
 
     @Test
     public void orca_5NodeGraphlet_1kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/graph_1k_4k.in");
-        String[] args = new String[]{"5", path};
+        String path = getResourcePath("/test_graphs/graph_1k_6k.in");
 
         try{
             orca.init(5, path);
@@ -128,7 +124,7 @@ public class OrcaTest {
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
                 .collect(Collectors.toList());
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_4k_5node.out"),
+        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_6k_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(expectedResult.equals(actualResult));
@@ -137,7 +133,6 @@ public class OrcaTest {
     @Test
     public void orca_5NodeGraphlet_10kNodeGraph_Test() throws IOException {
         String path = getResourcePath("/test_graphs/graph_10k_20k.in");
-        String[] args = new String[]{"5", path};
 
         try{
             orca.init(5, path);

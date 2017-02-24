@@ -9,7 +9,7 @@ public class FourNodeGraphletOrbitCounter extends OrbitCounter {
 
     public FourNodeGraphletOrbitCounter(ImmutableGraph graph) {
         super(graph);
-        this.orbit = new long[graph.getNodesCount()][15];
+        this.orbit = new long[n][15];
     }
 
     /**
