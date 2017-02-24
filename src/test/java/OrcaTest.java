@@ -1,3 +1,4 @@
+import com.orca.algorithm.Orca;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,13 +22,14 @@ public class OrcaTest {
     @Test
     public void orca_4NodeGraphlet_100NodeGraph_Test() throws IOException {
         String path = OrcaTest.class.getResource("test_graphs/example.in").getPath();
-        String[] args = new String[]{"4", path};
 
-        if(!orca.init(args.length, args)) {
-            Assert.fail("invalid arguments");
+        try{
+            orca.init(4, path);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
-        orca.count4();
-        long[][] vector = orca.getSignatureVector();
+
+        long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
                 .map(longs -> Arrays.copyOf(longs, 15))
@@ -43,13 +45,14 @@ public class OrcaTest {
     @Test
     public void orca_4NodeGraphlet_1kNodeGraph_Test() throws IOException {
         String path = OrcaTest.class.getResource("test_graphs/graph_1k_6k.in").getPath();
-        String[] args = new String[]{"4", path};
 
-        if(!orca.init(args.length, args)) {
-            Assert.fail("invalid arguments");
+        try{
+            orca.init(4, path);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
-        orca.count4();
-        long[][] vector = orca.getSignatureVector();
+
+        long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
                 .map(longs -> Arrays.copyOf(longs, 15))
@@ -65,13 +68,14 @@ public class OrcaTest {
     @Test
     public void orca_4NodeGraphlet_10kNodeGraph_Test() throws IOException {
         String path = OrcaTest.class.getResource("test_graphs/graph_10k_20k.in").getPath();
-        String[] args = new String[]{"4", path};
 
-        if(!orca.init(args.length, args)) {
-            Assert.fail("invalid arguments");
+        try{
+            orca.init(4, path);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
-        orca.count4();
-        long[][] vector = orca.getSignatureVector();
+
+        long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
                 .map(longs -> Arrays.copyOf(longs, 15))
@@ -87,14 +91,14 @@ public class OrcaTest {
     @Test
     public void orca_5NodeGraphlet_100NodeGraph_Test() throws IOException {
         String path = OrcaTest.class.getResource("test_graphs/example.in").getPath();
-        String[] args = new String[]{"5", path};
 
-        if(!orca.init(args.length, args)) {
-            Assert.fail("invalid arguments");
+        try{
+            orca.init(5, path);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
 
-        orca.count5();
-        long[][] vector = orca.getSignatureVector();
+        long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
@@ -111,12 +115,13 @@ public class OrcaTest {
         String path = OrcaTest.class.getResource("test_graphs/graph_1k_4k.in").getPath();
         String[] args = new String[]{"5", path};
 
-        if(!orca.init(args.length, args)) {
-            Assert.fail("invalid arguments");
+        try{
+            orca.init(5, path);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
 
-        orca.count5();
-        long[][] vector = orca.getSignatureVector();
+        long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
@@ -133,12 +138,13 @@ public class OrcaTest {
         String path = OrcaTest.class.getResource("test_graphs/graph_10k_20k.in").getPath();
         String[] args = new String[]{"5", path};
 
-        if(!orca.init(args.length, args)) {
-            Assert.fail("invalid arguments");
+        try{
+            orca.init(5, path);
+        } catch (Exception e){
+            Assert.fail(e.getMessage());
         }
 
-        orca.count5();
-        long[][] vector = orca.getSignatureVector();
+        long[ ][ ] vector = orca.count();
 
         List<String> actualResult = Arrays.stream(vector)
                 .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
