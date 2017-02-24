@@ -1,4 +1,5 @@
-import com.orca.algorithm.Orca;
+package com.orca.algorithm;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
