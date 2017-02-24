@@ -3,8 +3,10 @@ ORbit Counting Algorithm: for counting graphlet degree vector(automorphism orbit
 This project is Java implementation of https://github.com/thocevar/orca
 
 #Maven
-`<dependency>
+```xml
+<dependency>
     <groupId>com.rit.capstone</groupId>
     <artifactId>orbitcounter</artifactId>
     <version>1.0-SNAPSHOT</version>
- </dependency>`
+ </dependency>
+```
