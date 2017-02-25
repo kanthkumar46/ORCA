@@ -1,6 +1,7 @@
 package com.orca.algorithm;
 
 import com.orca.utils.TestSetup;
+import javaslang.collection.Array;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -8,9 +9,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Unit tests for ORCA
@@ -33,14 +32,13 @@ public class OrcaTest extends TestSetup {
 
         long[ ][ ] vector = orca.count();
 
-        List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
-                .collect(Collectors.toList());
+        Array<String> actualResult = Array.of(vector)
+                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
 
         List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/example_4node.out"),
                 Charset.defaultCharset());
 
-        Assert.assertTrue(expectedResult.equals(actualResult));
+        Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
     @Test
@@ -55,14 +53,13 @@ public class OrcaTest extends TestSetup {
 
         long[ ][ ] vector = orca.count();
 
-        List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
-                .collect(Collectors.toList());
+        Array<String> actualResult = Array.of(vector)
+                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
 
         List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/p_05_4node.out"),
                 Charset.defaultCharset());
 
-        Assert.assertTrue(expectedResult.equals(actualResult));
+        Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
     @Test
@@ -77,14 +74,13 @@ public class OrcaTest extends TestSetup {
 
         long[ ][ ] vector = orca.count();
 
-        List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.stream(longs).boxed().map(String::valueOf).collect(Collectors.joining(" ")))
-                .collect(Collectors.toList());
+        Array<String> actualResult = Array.of(vector)
+                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
 
         List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_60k_4node.out"),
                 Charset.defaultCharset());
 
-        Assert.assertTrue(expectedResult.equals(actualResult));
+        Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
     @Test
@@ -99,14 +95,13 @@ public class OrcaTest extends TestSetup {
 
         long[ ][ ] vector = orca.count();
 
-        List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
-                .collect(Collectors.toList());
+        Array<String> actualResult = Array.of(vector)
+                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
 
         List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/example_5node.out"),
                 Charset.defaultCharset());
 
-        Assert.assertTrue(expectedResult.equals(actualResult));
+        Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
     @Test
@@ -121,14 +116,13 @@ public class OrcaTest extends TestSetup {
 
         long[ ][ ] vector = orca.count();
 
-        List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
-                .collect(Collectors.toList());
+        Array<String> actualResult = Array.of(vector)
+                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
 
         List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_6k_5node.out"),
                 Charset.defaultCharset());
 
-        Assert.assertTrue(expectedResult.equals(actualResult));
+        Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
     @Test
@@ -143,14 +137,13 @@ public class OrcaTest extends TestSetup {
 
         long[ ][ ] vector = orca.count();
 
-        List<String> actualResult = Arrays.stream(vector)
-                .map(longs -> Arrays.stream(longs).mapToObj(String::valueOf).collect(Collectors.joining(" ")))
-                .collect(Collectors.toList());
+        Array<String> actualResult = Array.of(vector)
+                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
 
         List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_20k_5node.out"),
                 Charset.defaultCharset());
 
-        Assert.assertTrue(expectedResult.equals(actualResult));
+        Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
     private InputStream getResourceStream(String file){

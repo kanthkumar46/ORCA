@@ -1,10 +1,13 @@
 package com.orca.utils;
 
 import javaslang.Tuple;
-import javaslang.collection.Array;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Created by KanthKumar on 2/22/17.
@@ -20,7 +23,7 @@ public class Util {
     }
 
     public static Tuple createTuple(int x, int y, int z) {
-        Array arr = Array.of(x, y, z).sorted();
-        return Tuple.of(arr.get(0), arr.get(1), arr.get(2));
+        return IntStream.of(x, y, z).boxed().sorted()
+                .collect(collectingAndThen(toList(), list -> Tuple.of(list.get(0), list.get(1), list.get(2))));
     }
 }
