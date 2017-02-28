@@ -16,7 +16,7 @@ public class FiveNodeGraphletOrbitCounter extends OrbitCounter {
     private Map<Tuple, Integer> common2 = new HashMap<>();
     private Map<Tuple, Integer> common3 = new HashMap<>();
 
-    public FiveNodeGraphletOrbitCounter(ImmutableGraph graph) {
+    public FiveNodeGraphletOrbitCounter(OrcaGraph graph) {
         super(graph);
         this.orbit = new long[n][73];
     }

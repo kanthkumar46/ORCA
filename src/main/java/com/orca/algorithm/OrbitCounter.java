@@ -1,25 +1,25 @@
 package com.orca.algorithm;
 
+import com.jgraphtsupport.Edge;
 import javaslang.Tuple2;
-
-import java.util.List;
+import javaslang.collection.Array;
 
 /**
  * Created by KanthKumar on 2/22/17.
  */
 public abstract class OrbitCounter {
-    protected final ImmutableGraph hostGraph;
+    protected final OrcaGraph hostGraph;
     protected final int m; //edges count
     protected final int n; //nodes count
     protected final int[ ] deg; //deg[x] - degree of node x
-    protected final List<Tuple2<Integer, Integer>> edges;
+    protected Array<Edge> edges;
 
     protected final int[ ][ ] adj; // adj[x] - adjacency list of node x
     protected final Tuple2<Integer, Integer>[ ][ ] inc; // inc[x] - incidence list of node x: (y, edge id)
 
     protected long[ ][ ] orbit; // orbit[x][o] - how many times does node x participate in orbit o
 
-    public OrbitCounter(ImmutableGraph graph) {
+    public OrbitCounter(OrcaGraph graph) {
         this.hostGraph = graph;
         this.n = graph.getNodesCount();
         this.m = graph.getEdgesCount();
@@ -33,13 +33,12 @@ public abstract class OrbitCounter {
 
     public int[ ] countTriangles() {
         int[ ] tri = new int[m];
-        int x, y, i = 0;
-        for (Tuple2<Integer, Integer> edge : edges) {
-            x = edge._1;
-            y = edge._2;
+        edges.zipWithIndex().forEach(edgeIndexTuple -> {
+            int x = edgeIndexTuple._1.getSourceVertexId();
+            int y = edgeIndexTuple._1.getTargetVertexId();
             for (int xi = 0, yi = 0; xi < deg[x] && yi < deg[y];) {
                 if (adj[x][xi] == adj[y][yi]) {
-                    tri[i]++;
+                    tri[edgeIndexTuple._2]++;
                     xi++;
                     yi++;
                 } else if (adj[x][xi] < adj[y][yi]) {
@@ -48,8 +47,7 @@ public abstract class OrbitCounter {
                     yi++;
                 }
             }
-            i++;
-        }
+        });
         return tri;
     }
 

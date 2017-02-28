@@ -12,6 +12,7 @@
         <commons-io.version>2.5</commons-io.version>
         <immutables.version>2.4.3</immutables.version>
         <javaslang.version>2.1.0-alpha</javaslang.version>
+        <jgrapht-support.version>1.0-SNAPSHOT</jgrapht-support.version>
         <junit.version>4.12</junit.version>
     </properties>
 
@@ -35,6 +36,11 @@
             <groupId>io.javaslang</groupId>
             <artifactId>javaslang</artifactId>
             <version>${javaslang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rit.capstone</groupId>
+            <artifactId>jgrapht-support</artifactId>
+            <version>${jgrapht-support.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

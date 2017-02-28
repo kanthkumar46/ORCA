@@ -1,10 +1,11 @@
 package com.orca.algorithm;
 
-import javaslang.Tuple;
+import com.jgraphtsupport.Edge;
+import com.jgraphtsupport.GraphUtils;
+import com.jgraphtsupport.Vertex;
+import javaslang.collection.Array;
+import org.jgrapht.UndirectedGraph;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import java.util.stream.IntStream;
 
 /**
@@ -17,52 +18,36 @@ public class Orca {
 
     private OrbitCounter orbitCounter;
 
-    public void init(int graphletSize, String graphFilePath) throws FileNotFoundException {
+    public void init(int graphletSize, UndirectedGraph<Vertex, Edge> graph) {
         if (graphletSize != 4 && graphletSize != 5) {
             throw new IllegalArgumentException("Incorrect graphlet size " + graphletSize + ". Should be 4 or 5.");
         }
 
-        Scanner scanner = new Scanner(new File(graphFilePath));
-
-        // read input graph
-        int n = scanner.nextInt();
-        int m = scanner.nextInt();
-
-        int a, b;
+        int n = GraphUtils.getMaxVertexId(graph).orElse(-1) + 1;
+        int m = graph.edgeSet().size();
         int[ ] deg = new int[n];
-        ImmutableGraph.Builder graphBuilder = ImmutableGraph.builder()
+
+        graph.vertexSet().forEach(vertex -> {
+            int vertexId = vertex.getVertexId();
+            deg[vertexId] = graph.degreeOf(vertex);
+        });
+
+        Array<Edge> edges = Array.ofAll(graph.edgeSet());
+        ImmutableOrcaGraph immutableGraph = ImmutableOrcaGraph.builder()
                 .nodesCount(n)
-                .edgesCount(m);
-
-        for (int i = 0; i < m; i++) {
-            a = scanner.nextInt();
-            b = scanner.nextInt();
-            if (!(0 <= a && a < n) || !(0 <= b && b < n)) {
-                throw new RuntimeException("Node ids should be between 0 and n-1.");
-            }
-            if (a == b) {
-                throw new RuntimeException("Self loops (edge from x to x) are not allowed.");
-            }
-            deg[a]++;
-            deg[b]++;
-            graphBuilder.addEdges(Tuple.of(a, b));
-        }
-
-        ImmutableGraph graph = graphBuilder.nodesDegree(deg).build();
+                .edgesCount(m)
+                .edges(edges)
+                .nodesDegree(deg).build();
 
         int maxDegree = IntStream.of(deg).max().orElse(0);
         System.out.println("nodes: " + n);
         System.out.println("edges: " + m);
         System.out.println("max degree: " + maxDegree);
 
-        if (graph.getEdges().stream().distinct().count() != m) {
-            throw new RuntimeException("Input file contains duplicate undirected edges.");
-        }
-
         if(graphletSize == 4) {
-            this.orbitCounter = new FourNodeGraphletOrbitCounter(graph);
+            this.orbitCounter = new FourNodeGraphletOrbitCounter(immutableGraph);
         } else {
-            this.orbitCounter = new FiveNodeGraphletOrbitCounter(graph);
+            this.orbitCounter = new FiveNodeGraphletOrbitCounter(immutableGraph);
         }
     }
 

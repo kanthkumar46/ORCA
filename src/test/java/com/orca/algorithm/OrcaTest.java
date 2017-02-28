@@ -1,8 +1,12 @@
 package com.orca.algorithm;
 
+import com.jgraphtsupport.Edge;
+import com.jgraphtsupport.GraphUtils;
+import com.jgraphtsupport.Vertex;
 import com.orca.utils.TestSetup;
 import javaslang.collection.Array;
 import org.apache.commons.io.IOUtils;
+import org.jgrapht.UndirectedGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,14 +26,8 @@ public class OrcaTest extends TestSetup {
 
     @Test
     public void orca_4NodeGraphlet_100NodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/example.in");
-
-        try{
-            orca.init(4, path);
-        } catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
-
+        UndirectedGraph<Vertex, Edge> graph = generateGraph("/test_graphs/example.in");
+        orca.init(4, graph);
         long[ ][ ] vector = orca.count();
 
         Array<String> actualResult = Array.of(vector)
@@ -43,14 +41,8 @@ public class OrcaTest extends TestSetup {
 
     @Test
     public void orca_4NodeGraphlet_1kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/p_05.in");
-
-        try{
-            orca.init(4, path);
-        } catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
-
+        UndirectedGraph<Vertex, Edge> graph = generateGraph("/test_graphs/p_05.in");
+        orca.init(4, graph);
         long[ ][ ] vector = orca.count();
 
         Array<String> actualResult = Array.of(vector)
@@ -64,14 +56,8 @@ public class OrcaTest extends TestSetup {
 
     @Test
     public void orca_4NodeGraphlet_10kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/graph_10k_60k.in");
-
-        try{
-            orca.init(4, path);
-        } catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
-
+        UndirectedGraph<Vertex, Edge> graph = generateGraph("/test_graphs/graph_10k_60k.in");
+        orca.init(4, graph);
         long[ ][ ] vector = orca.count();
 
         Array<String> actualResult = Array.of(vector)
@@ -85,14 +71,8 @@ public class OrcaTest extends TestSetup {
 
     @Test
     public void orca_5NodeGraphlet_100NodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/example.in");
-
-        try{
-            orca.init(5, path);
-        } catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
-
+        UndirectedGraph<Vertex, Edge> graph = generateGraph("/test_graphs/example.in");
+        orca.init(5, graph);
         long[ ][ ] vector = orca.count();
 
         Array<String> actualResult = Array.of(vector)
@@ -106,14 +86,8 @@ public class OrcaTest extends TestSetup {
 
     @Test
     public void orca_5NodeGraphlet_1kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/graph_1k_6k.in");
-
-        try{
-            orca.init(5, path);
-        } catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
-
+        UndirectedGraph<Vertex, Edge> graph = generateGraph("/test_graphs/graph_1k_6k.in");
+        orca.init(5, graph);
         long[ ][ ] vector = orca.count();
 
         Array<String> actualResult = Array.of(vector)
@@ -127,14 +101,8 @@ public class OrcaTest extends TestSetup {
 
     @Test
     public void orca_5NodeGraphlet_10kNodeGraph_Test() throws IOException {
-        String path = getResourcePath("/test_graphs/graph_10k_20k.in");
-
-        try{
-            orca.init(5, path);
-        } catch (Exception e){
-            Assert.fail(e.getMessage());
-        }
-
+        UndirectedGraph<Vertex, Edge> graph = generateGraph("/test_graphs/graph_10k_20k.in");
+        orca.init(5, graph);
         long[ ][ ] vector = orca.count();
 
         Array<String> actualResult = Array.of(vector)
@@ -150,7 +118,10 @@ public class OrcaTest extends TestSetup {
         return OrcaTest.class.getResourceAsStream(file);
     }
 
-    private String getResourcePath(String file){
-        return OrcaTest.class.getResource(file).getPath();
+    private UndirectedGraph<Vertex, Edge> generateGraph(String file) throws IOException {
+        List<String> edgeList = IOUtils.readLines(getResourceStream(file), Charset.defaultCharset());
+        edgeList.remove(0);
+
+        return GraphUtils.convert(edgeList);
     }
 }

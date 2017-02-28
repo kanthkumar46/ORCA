@@ -7,7 +7,7 @@ import static com.orca.utils.Util.adjacent;
  */
 public class FourNodeGraphletOrbitCounter extends OrbitCounter {
 
-    public FourNodeGraphletOrbitCounter(ImmutableGraph graph) {
+    public FourNodeGraphletOrbitCounter(OrcaGraph graph) {
         super(graph);
         this.orbit = new long[n][15];
     }
