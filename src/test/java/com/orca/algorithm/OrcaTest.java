@@ -122,6 +122,6 @@ public class OrcaTest extends TestSetup {
         List<String> edgeList = IOUtils.readLines(getResourceStream(file), Charset.defaultCharset());
         edgeList.remove(0);
 
-        return GraphUtils.convert(edgeList);
+        return GraphUtils.convertToGraph(edgeList);
     }
 }

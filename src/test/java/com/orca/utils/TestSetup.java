@@ -1,5 +1,8 @@
 package com.orca.utils;
 
+import com.orca.algorithm.Orca;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -10,6 +13,7 @@ import org.junit.rules.TestName;
  */
 public class TestSetup {
 
+    private static final Logger LOGGER = LogManager.getLogger(Orca.class);
     private long startTime;
 
     @Rule
@@ -18,11 +22,11 @@ public class TestSetup {
     @Before
     public void beforeMethod() {
         startTime = System.currentTimeMillis();
-        System.out.println("Stating test: "+name.getMethodName());
+        LOGGER.info("Stating test: "+name.getMethodName());
     }
 
     @After
     public void afterMethod() {
-        System.out.println("Finished, Time elapsed: "+(System.currentTimeMillis() - startTime)+"ms\n");
+        LOGGER.info("Finished, Time elapsed: "+(System.currentTimeMillis() - startTime)+"ms\n");
     }
 }

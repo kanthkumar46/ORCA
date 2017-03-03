@@ -4,6 +4,8 @@ import com.jgraphtsupport.Edge;
 import com.jgraphtsupport.GraphUtils;
 import com.jgraphtsupport.Vertex;
 import javaslang.collection.Array;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgrapht.UndirectedGraph;
 
 import java.util.stream.IntStream;
@@ -16,6 +18,7 @@ import java.util.stream.IntStream;
  */
 public class Orca {
 
+    private static final Logger LOGGER = LogManager.getLogger(Orca.class);
     private OrbitCounter orbitCounter;
 
     public void init(int graphletSize, UndirectedGraph<Vertex, Edge> graph) {
@@ -40,9 +43,9 @@ public class Orca {
                 .nodesDegree(deg).build();
 
         int maxDegree = IntStream.of(deg).max().orElse(0);
-        System.out.println("nodes: " + n);
-        System.out.println("edges: " + m);
-        System.out.println("max degree: " + maxDegree);
+        LOGGER.debug("nodes: " + n);
+        LOGGER.debug("edges: " + m);
+        LOGGER.debug("max degree: " + maxDegree);
 
         if(graphletSize == 4) {
             this.orbitCounter = new FourNodeGraphletOrbitCounter(immutableGraph);
