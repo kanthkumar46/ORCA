@@ -12,7 +12,7 @@
         <commons-io.version>2.5</commons-io.version>
         <immutables.version>2.4.3</immutables.version>
         <javaslang.version>2.1.0-alpha</javaslang.version>
-        <jgrapht-support.version>1.0-SNAPSHOT</jgrapht-support.version>
+        <libraries-support.version>1.0-SNAPSHOT</libraries-support.version>
         <junit.version>4.12</junit.version>
         <log4j.version>2.3</log4j.version>
     </properties>
@@ -32,6 +32,7 @@
             <groupId>org.immutables</groupId>
             <artifactId>value</artifactId>
             <version>${immutables.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.javaslang</groupId>
@@ -40,8 +41,8 @@
         </dependency>
         <dependency>
             <groupId>com.rit.capstone</groupId>
-            <artifactId>jgrapht-support</artifactId>
-            <version>${jgrapht-support.version}</version>
+            <artifactId>libraries-support</artifactId>
+            <version>${libraries-support.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

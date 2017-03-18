@@ -3,17 +3,18 @@ package com.orca.algorithm;
 import com.jgraphtsupport.Edge;
 import com.jgraphtsupport.GraphUtils;
 import com.jgraphtsupport.Vertex;
-import com.orca.utils.TestSetup;
+import com.junitsupport.TestSetup;
 import javaslang.collection.Array;
-import org.apache.commons.io.IOUtils;
 import org.jgrapht.UndirectedGraph;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.List;
+
+import static com.junitsupport.TestUtils.getResourceStream;
+import static org.apache.commons.io.IOUtils.readLines;
 
 /**
  * Unit tests for ORCA
@@ -30,10 +31,9 @@ public class OrcaTest extends TestSetup {
         orca.init(4, graph);
         long[ ][ ] vector = orca.count();
 
-        Array<String> actualResult = Array.of(vector)
-                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
+        Array<String> actualResult = Array.of(vector).map(longs -> Array.ofAll(longs).mkString(" "));
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/example_4node.out"),
+        List<String> expectedResult = readLines(getResourceStream("/signature_vector/example_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(actualResult.eq(expectedResult));
@@ -45,10 +45,9 @@ public class OrcaTest extends TestSetup {
         orca.init(4, graph);
         long[ ][ ] vector = orca.count();
 
-        Array<String> actualResult = Array.of(vector)
-                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
+        Array<String> actualResult = Array.of(vector).map(longs -> Array.ofAll(longs).mkString(" "));
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/p_05_4node.out"),
+        List<String> expectedResult = readLines(getResourceStream("/signature_vector/p_05_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(actualResult.eq(expectedResult));
@@ -60,10 +59,9 @@ public class OrcaTest extends TestSetup {
         orca.init(4, graph);
         long[ ][ ] vector = orca.count();
 
-        Array<String> actualResult = Array.of(vector)
-                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
+        Array<String> actualResult = Array.of(vector).map(longs -> Array.ofAll(longs).mkString(" "));
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_60k_4node.out"),
+        List<String> expectedResult = readLines(getResourceStream("/signature_vector/graph_10k_60k_4node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(actualResult.eq(expectedResult));
@@ -75,10 +73,9 @@ public class OrcaTest extends TestSetup {
         orca.init(5, graph);
         long[ ][ ] vector = orca.count();
 
-        Array<String> actualResult = Array.of(vector)
-                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
+        Array<String> actualResult = Array.of(vector).map(longs -> Array.ofAll(longs).mkString(" "));
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/example_5node.out"),
+        List<String> expectedResult = readLines(getResourceStream("/signature_vector/example_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(actualResult.eq(expectedResult));
@@ -90,10 +87,9 @@ public class OrcaTest extends TestSetup {
         orca.init(5, graph);
         long[ ][ ] vector = orca.count();
 
-        Array<String> actualResult = Array.of(vector)
-                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
+        Array<String> actualResult = Array.of(vector).map(longs -> Array.ofAll(longs).mkString(" "));
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_1k_6k_5node.out"),
+        List<String> expectedResult = readLines(getResourceStream("/signature_vector/graph_1k_6k_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(actualResult.eq(expectedResult));
@@ -105,21 +101,16 @@ public class OrcaTest extends TestSetup {
         orca.init(5, graph);
         long[ ][ ] vector = orca.count();
 
-        Array<String> actualResult = Array.of(vector)
-                .map(longs -> Array.ofAll(longs).map(String::valueOf).mkString(" "));
+        Array<String> actualResult = Array.of(vector).map(longs -> Array.ofAll(longs).mkString(" "));
 
-        List<String> expectedResult = IOUtils.readLines(getResourceStream("/signature_vector/graph_10k_20k_5node.out"),
+        List<String> expectedResult = readLines(getResourceStream("/signature_vector/graph_10k_20k_5node.out"),
                 Charset.defaultCharset());
 
         Assert.assertTrue(actualResult.eq(expectedResult));
     }
 
-    private InputStream getResourceStream(String file){
-        return OrcaTest.class.getResourceAsStream(file);
-    }
-
     private UndirectedGraph<Vertex, Edge> generateGraph(String file) throws IOException {
-        List<String> edgeList = IOUtils.readLines(getResourceStream(file), Charset.defaultCharset());
+        List<String> edgeList = readLines(getResourceStream(file), Charset.defaultCharset());
         edgeList.remove(0);
 
         return GraphUtils.convertToGraph(edgeList);

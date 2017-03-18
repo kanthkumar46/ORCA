@@ -1,6 +1,6 @@
 package com.orca.algorithm;
 
-import com.jgraphtsupport.Edge;
+import com.jgraphtsupport.AbstractEdge;
 import javaslang.Tuple2;
 import javaslang.collection.Array;
 
@@ -12,7 +12,7 @@ public abstract class OrbitCounter {
     protected final int m; //edges count
     protected final int n; //nodes count
     protected final int[ ] deg; //deg[x] - degree of node x
-    protected Array<Edge> edges;
+    protected Array<AbstractEdge> edges;
 
     protected final int[ ][ ] adj; // adj[x] - adjacency list of node x
     protected final Tuple2<Integer, Integer>[ ][ ] inc; // inc[x] - incidence list of node x: (y, edge id)

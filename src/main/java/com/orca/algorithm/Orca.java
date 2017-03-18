@@ -1,8 +1,8 @@
 package com.orca.algorithm;
 
-import com.jgraphtsupport.Edge;
+import com.jgraphtsupport.AbstractEdge;
+import com.jgraphtsupport.AbstractVertex;
 import com.jgraphtsupport.GraphUtils;
-import com.jgraphtsupport.Vertex;
 import javaslang.collection.Array;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,12 +21,12 @@ public class Orca {
     private static final Logger LOGGER = LogManager.getLogger(Orca.class);
     private OrbitCounter orbitCounter;
 
-    public void init(int graphletSize, UndirectedGraph<Vertex, Edge> graph) {
+    public <T extends AbstractVertex, U extends AbstractEdge<T>> void init(int graphletSize, UndirectedGraph<T, U> graph) {
         if (graphletSize != 4 && graphletSize != 5) {
             throw new IllegalArgumentException("Incorrect graphlet size " + graphletSize + ". Should be 4 or 5.");
         }
 
-        int n = GraphUtils.getMaxVertexId(graph).orElse(-1) + 1;
+        int n = GraphUtils.getMaxVertexId(graph).getOrElse(-1) + 1;
         int m = graph.edgeSet().size();
         int[ ] deg = new int[n];
 
@@ -35,8 +35,8 @@ public class Orca {
             deg[vertexId] = graph.degreeOf(vertex);
         });
 
-        Array<Edge> edges = Array.ofAll(graph.edgeSet());
-        ImmutableOrcaGraph immutableGraph = ImmutableOrcaGraph.builder()
+        Array<AbstractEdge> edges = Array.ofAll(graph.edgeSet());
+        OrcaGraph immutableGraph = ImmutableOrcaGraph.builder()
                 .nodesCount(n)
                 .edgesCount(m)
                 .edges(edges)

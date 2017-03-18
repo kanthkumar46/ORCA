@@ -1,6 +1,7 @@
 package com.orca.algorithm;
 
-import com.jgraphtsupport.Edge;
+import com.immutablessupport.styles.BuilderStyle;
+import com.jgraphtsupport.AbstractEdge;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.Array;
@@ -13,11 +14,12 @@ import java.util.stream.IntStream;
  * Created by KanthKumar on 2/23/17.
  */
 @Value.Immutable
+@BuilderStyle
 public abstract class OrcaGraph {
     public abstract int getEdgesCount();
     public abstract int getNodesCount();
     public abstract int[ ] getNodesDegree();
-    public abstract Array<Edge> getEdges();
+    public abstract Array<AbstractEdge> getEdges();
 
     @Value.Derived
     public int[ ][ ] getAdjacencyList() {
