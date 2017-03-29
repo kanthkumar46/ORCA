@@ -1,6 +1,6 @@
-package com.orca.algorithm;
+package edu.orca.algorithm;
 
-import static com.orca.utils.Util.adjacent;
+import static edu.orca.utils.Util.adjacent;
 
 /**
  * Created by KanthKumar on 2/22/17.

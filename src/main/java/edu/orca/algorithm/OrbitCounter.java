@@ -1,6 +1,6 @@
-package com.orca.algorithm;
+package edu.orca.algorithm;
 
-import com.jgraphtsupport.AbstractEdge;
+import edu.jgraphtsupport.AbstractEdge;
 import javaslang.Tuple2;
 import javaslang.collection.Array;
 

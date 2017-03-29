@@ -1,9 +1,9 @@
-package com.orca.algorithm;
+package edu.orca.algorithm;
 
-import com.jgraphtsupport.Edge;
-import com.jgraphtsupport.GraphUtils;
-import com.jgraphtsupport.Vertex;
-import com.junitsupport.TestSetup;
+import edu.jgraphtsupport.Edge;
+import edu.jgraphtsupport.GraphUtils;
+import edu.jgraphtsupport.Vertex;
+import edu.junitsupport.TestSetup;
 import javaslang.collection.Array;
 import org.jgrapht.UndirectedGraph;
 import org.junit.Assert;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
-import static com.junitsupport.TestUtils.getResourceStream;
+import static edu.junitsupport.TestUtils.getResourceStream;
 import static org.apache.commons.io.IOUtils.readLines;
 
 /**

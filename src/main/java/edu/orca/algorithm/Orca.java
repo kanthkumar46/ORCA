@@ -1,8 +1,8 @@
-package com.orca.algorithm;
+package edu.orca.algorithm;
 
-import com.jgraphtsupport.AbstractEdge;
-import com.jgraphtsupport.AbstractVertex;
-import com.jgraphtsupport.GraphUtils;
+import edu.jgraphtsupport.AbstractEdge;
+import edu.jgraphtsupport.AbstractVertex;
+import edu.jgraphtsupport.GraphUtils;
 import javaslang.collection.Array;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +21,14 @@ public class Orca {
     private static final Logger LOGGER = LogManager.getLogger(Orca.class);
     private OrbitCounter orbitCounter;
 
+    /**
+     * Initializer method
+     *
+     * @param graphletSize size of graphlets over which signature of a node needs to be calculated (either 4 or 5)
+     * @param graph undirected simple graph (no loops and multiple edge between vertices)
+     * @param <T> vertex or node type
+     * @param <U> edge type
+     */
     public <T extends AbstractVertex, U extends AbstractEdge<T>> void init(int graphletSize, UndirectedGraph<T, U> graph) {
         if (graphletSize != 4 && graphletSize != 5) {
             throw new IllegalArgumentException("Incorrect graphlet size " + graphletSize + ". Should be 4 or 5.");

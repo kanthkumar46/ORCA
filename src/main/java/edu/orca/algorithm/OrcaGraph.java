@@ -1,7 +1,7 @@
-package com.orca.algorithm;
+package edu.orca.algorithm;
 
-import com.immutablessupport.styles.BuilderStyle;
-import com.jgraphtsupport.AbstractEdge;
+import edu.immutablessupport.styles.BuilderStyle;
+import edu.jgraphtsupport.AbstractEdge;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.Array;

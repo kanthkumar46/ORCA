@@ -1,4 +1,4 @@
-package com.orca.utils;
+package edu.orca.utils;
 
 import javaslang.Tuple;
 import org.apache.commons.lang3.math.NumberUtils;

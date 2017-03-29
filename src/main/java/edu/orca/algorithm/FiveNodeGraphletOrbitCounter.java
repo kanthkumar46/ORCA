@@ -1,12 +1,12 @@
-package com.orca.algorithm;
+package edu.orca.algorithm;
 
 import javaslang.Tuple;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.orca.utils.Util.adjacent;
-import static com.orca.utils.Util.createTuple;
+import static edu.orca.utils.Util.adjacent;
+import static edu.orca.utils.Util.createTuple;
 
 /**
  * Created by KanthKumar on 2/22/17.
