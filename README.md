@@ -10,6 +10,6 @@ This project is Java implementation of https://github.com/thocevar/orca
 <dependency>
     <groupId>com.rit.capstone</groupId>
     <artifactId>orbitcounter</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1</version>
  </dependency>
 ```
