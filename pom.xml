@@ -88,4 +88,12 @@
         </repository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+          <id>github</id>
+          <name>GitHub Apache Maven Packages</name>
+          <url>https://maven.pkg.github.com/kanthkumar46/libraries-support</url>
+        </repository>
+    </repositories>
+
 </project>
