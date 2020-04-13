@@ -8,7 +8,7 @@ This project is Java implementation of https://github.com/thocevar/orca
 > Add below dependency to your project  
 ```xml
 <dependency>
-    <groupId>com.rit.capstone</groupId>
+    <groupId>edu.rit.capstone</groupId>
     <artifactId>orbitcounter</artifactId>
     <version>1.1</version>
  </dependency>
